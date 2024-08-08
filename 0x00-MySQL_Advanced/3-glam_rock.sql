@@ -1,5 +1,6 @@
--- Ranks country origins of bands, ordered by the number of (non-unique) fans.
-SELECT origin, SUM(fans) AS nb_fans
-	FROM metal_bands
-	GROUP BY origin
-	ORDER BY nb_fans DESC;
+-- Lists all bands with Glam rock as their main style, ranked by their longevity.
+-- SELECT band_name, (IFNULL(split, YEAR(CURRENT_DATE())) - formed) AS lifespan
+SELECT band_name, (IFNULL(split, '2020') - formed) AS lifespan
+    FROM metal_bands
+    WHERE FIND_IN_SET('Glam rock', IFNULL(style, "")) > 0
+    ORDER BY lifespan DESC;
