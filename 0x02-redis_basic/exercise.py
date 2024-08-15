@@ -8,31 +8,32 @@ from functools import wraps
 
 
 def call_history(method: Callable) -> Callable:
-        """ store the history of inputs and outputs for a particular function """
-        key = method.__qualname__
-        inputs = key + ":inputs"
-        outputs = key + ":outputs"
+    """ store the history of inputs and outputs for
+    a particular function """
+    key = method.__qualname__
+    inputs = key + ":inputs"
+    outputs = key + ":outputs"
 
-        @wraps(method)
-        def wrapper(self, *args, **kwds):
-            """ wrapped function """
-            self._redis.rpush(inputs, str(args))
-            data = method(self, *args, **kwds)
-            self._redis.rpush(outputs, str(data))
-            return data
-        return wrapper
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """ wrapped function """
+        self._redis.rpush(inputs, str(args))
+        data = method(self, *args, **kwds)
+        self._redis.rpush(outputs, str(data))
+        return data
+    return wrapper
 
 
 def count_calls(method: Callable) -> Callable:
-        """ to count how many times methods of the Cache class are called """
-        key = method.__qualname__
+    """ to count how many times methods of the Cache class are called """
+    key = method.__qualname__
 
-        @wraps(method)
-        def wrapper(self, *args, **kwds):
-            """ wrapped function """
-            self._redis.incr(key)
-            return method(self, *args, **kwds)
-        return wrapper
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """ wrapped function """
+        self._redis.incr(key)
+        return method(self, *args, **kwds)
+    return wrapper
 
 
 class Cache:
@@ -74,6 +75,7 @@ class Cache:
         except Exception:
             data = 0
         return data
+
 
 def replay(method: Callable):
     """ display the history of calls of a particular function """
