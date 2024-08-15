@@ -8,14 +8,14 @@ count = 0
 
 
 def get_page(url: str) -> str:
-        """ track how many times a particular URL was accessed in the key
-        "count:{url}"
-         and cache the result with an expiration time of 10 seconds """
-        r.set(f"cached:{url}", count)
-        resp = requests.get(url)
-        r.incr(f"count:{url}")
-        r.setex(f"cached:{url}", 10, r.get(f"cached:{url}"))
-        return resp.text
+    """ track how many times a particular URL was accessed in the key
+    "count:{url}"
+        and cache the result with an expiration time of 10 seconds """
+    r.set(f"cached:{url}", count)
+    resp = requests.get(url)
+    r.incr(f"count:{url}")
+    r.setex(f"cached:{url}", 10, r.get(f"cached:{url}"))
+    return resp.text
 
 
 if __name__ == "__main__":
